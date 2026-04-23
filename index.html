@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Shuffle</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23fe2c55'/><text x='16' y='24' text-anchor='middle' font-size='22' font-weight='bold' fill='white' font-family='system-ui,sans-serif'>S</text></svg>">
+</head>
+<body data-screen="upload">
+
+  <!-- ══ UPLOAD SCREEN ══ -->
+  <div class="screen screen-upload">
+    <div class="app-title"><span class="accent-tiktok">TikTok</span> <span class="accent-shuffle">Shuffle</span></div>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-icon">📂</div>
+      <div class="drop-label">Drop your TikTok data JSON here</div>
+      <div class="drop-sub">or click to browse</div>
+      <input type="file" id="fileInput" accept=".json" style="display:none" />
+    </div>
+
+    <div class="demo-divider">or</div>
+    <button class="btn-demo" id="btnDemo">▶&nbsp; Try Demo</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="how-to">
+      <strong>How to get your data:</strong><br>
+      TikTok app → Profile → ☰ → Settings &amp; Privacy →
+      Account → Download your data → select <strong>JSON</strong> format →
+      wait for email → download &amp; unzip → open <strong>user_data.json</strong> here.<br><br>
+      Or go directly: <a href="https://www.tiktok.com/setting/download-your-data" target="_blank" rel="noopener noreferrer">TikTok → Download your data</a>
+    </div>
+  </div>
+
+  <!-- ══ PLAYER SCREEN ══ -->
+  <div class="screen screen-player">
+    <header class="player-header">
+      <div class="logo" id="btnLogo" role="button" tabindex="0"><span class="accent-tiktok">TikTok</span> <span class="accent-shuffle">Shuffle</span></div>
+      <div class="header-actions">
+        <select id="playMode" class="select-mode">
+          <option value="off">Playback: Off</option>
+          <option value="advance">Auto-advance</option>
+          <option value="loop">Loop video</option>
+        </select>
+        <button class="btn-ghost" id="btnLoadNew">Load new file</button>
+      </div>
+    </header>
+
+    <div class="player-body">
+      <div class="embed-wrap">
+        <div id="swipeZone" class="swipe-zone"></div>
+        <iframe id="tiktok-frame" scrolling="no" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      </div>
+
+      <div class="player-meta">
+        <div class="video-date" id="videoDate"></div>
+        <button class="btn-skip" id="btnSkip">⏭&nbsp; Skip / Next</button>
+        <div class="counter" id="counter"></div>
+        <div class="skip-notice" id="skipNotice"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ END SCREEN ══ -->
+  <div class="screen screen-end">
+    <div class="end-icon">🎉</div>
+    <div class="end-title" id="endTitle"></div>
+    <div class="end-sub">You've seen every bookmarked video in this shuffle.</div>
+    <div class="end-actions">
+      <button class="btn-primary" id="btnReshuffle">Reshuffle and go again</button>
+      <button class="btn-secondary" id="btnLoadNew2">Load a different file</button>
+    </div>
+  </div>
+
+  <script>
+    if (new URLSearchParams(location.search).has('debug')) {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      s.onload = () => eruda.init();
+      document.head.appendChild(s);
+    }
+  </script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

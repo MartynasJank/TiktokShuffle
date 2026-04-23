@@ -1,0 +1,120 @@
+import { shuffle, extractVideoId } from './parser.js';
+import { setScreen, showError } from './ui.js';
+
+const state = { deck: [], index: 0, total: 0 };
+
+let messageHandler = null;
+let isPlaying = false;
+let playMode = 'off'; // 'off' | 'advance' | 'loop'
+
+export function setPlayMode(mode) { playMode = mode; }
+
+function listenForReady(frame) {
+  if (messageHandler) window.removeEventListener('message', messageHandler);
+  messageHandler = (e) => {
+    if (e.origin !== 'https://www.tiktok.com') return;
+    const data = e.data;
+    if (!data?.['x-tiktok-player']) return;
+if (data.type === 'onPlayerReady') {
+      frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'play' }, 'https://www.tiktok.com');
+    }
+    if (data.type === 'onStateChange') {
+      isPlaying = data.value === 1;
+      if (isPlaying) {
+        frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'unMute' }, 'https://www.tiktok.com');
+      }
+      if (data.value === 0) {
+        if (playMode === 'advance') next();
+        else if (playMode === 'loop') {
+          frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'seekTo', value: 0 }, 'https://www.tiktok.com');
+          frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'play' }, 'https://www.tiktok.com');
+        }
+      }
+    }
+    if (data.type === 'onPlayerError') {
+      const code = data.value?.errorCode;
+      if (code === 1001 || !('ontouchstart' in window)) next();
+    }
+  };
+  window.addEventListener('message', messageHandler);
+}
+
+export function togglePlayback() {
+  const frame = document.getElementById('tiktok-frame');
+  if (isPlaying) {
+    frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'pause' }, 'https://www.tiktok.com');
+  } else {
+    frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'play' }, 'https://www.tiktok.com');
+    frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'unMute' }, 'https://www.tiktok.com');
+  }
+}
+
+export function initPlayer(rawList) {
+  const valid = rawList
+    .map(item => ({ ...item, videoId: extractVideoId(item.Link || item.link) }))
+    .filter(item => item.videoId);
+
+  const skipped = rawList.length - valid.length;
+
+  state.deck = shuffle(valid);
+  state.index = 0;
+  state.total = state.deck.length;
+
+  if (!state.total) {
+    showError('No valid video URLs found in the bookmarks list.');
+    return;
+  }
+
+  const notice = document.getElementById('skipNotice');
+  if (skipped > 0) {
+    notice.textContent = `${skipped} bookmark${skipped > 1 ? 's' : ''} skipped (unrecognised URL format)`;
+    notice.classList.add('visible');
+  } else {
+    notice.classList.remove('visible');
+  }
+
+  setScreen('player');
+  renderCard(0);
+}
+
+export function next() {
+  state.index++;
+  if (state.index >= state.total) {
+    document.getElementById('endTitle').textContent =
+      `You've seen all ${state.total} video${state.total !== 1 ? 's' : ''}!`;
+    setScreen('end');
+  } else {
+    renderCard(state.index);
+  }
+}
+
+export function previous() {
+  if (state.index <= 0) return;
+  state.index--;
+  renderCard(state.index);
+}
+
+export function reshuffle() {
+  state.deck = shuffle(state.deck);
+  state.index = 0;
+  setScreen('player');
+  renderCard(0);
+}
+
+export function clearPlayer() {
+  document.getElementById('tiktok-frame').src = 'about:blank';
+  state.deck = [];
+  state.index = 0;
+  state.total = 0;
+}
+
+function renderCard(index) {
+  const item = state.deck[index];
+  const frame = document.getElementById('tiktok-frame');
+  isPlaying = false;
+  listenForReady(frame);
+  frame.src = `https://www.tiktok.com/player/v1/${item.videoId}?autoplay=1&muted=0&loop=0&progress_bar=1&fullscreen_button=0&rel=0`;
+document.getElementById('counter').textContent = `${index + 1} / ${state.total}`;
+  const rawDate = item.Date || item.date || '';
+  document.getElementById('videoDate').textContent = rawDate ? `Saved: ${rawDate}` : '';
+}
