@@ -228,6 +228,25 @@ body[data-screen="end"]    .screen-end    { display: flex; }
   color: var(--text-muted);
 }
 
+.video-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-link-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.copy-link-btn:hover { color: var(--text); }
+.copy-link-btn.copied { color: #4caf50; }
+
 .open-in-tiktok {
   font-size: 0.78rem;
   color: var(--text-muted);

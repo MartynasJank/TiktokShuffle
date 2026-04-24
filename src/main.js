@@ -77,6 +77,54 @@ dropZone.addEventListener('drop', (e) => {
 
 // ── Player / end events ───────────────────────────────────────────────────────
 document.getElementById('btnSkip').addEventListener('click', next);
+document.getElementById('btnCopyLink').addEventListener('click', () => {
+  const url = document.getElementById('openInTiktok').href;
+  const btn = document.getElementById('btnCopyLink');
+
+  function onCopied() {
+    btn.classList.add('copied');
+    btn.textContent = '✓';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '⎘'; }, 1500);
+  }
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(url).then(onCopied).catch(() => fallbackCopy(url, onCopied));
+  } else {
+    fallbackCopy(url, onCopied);
+  }
+});
+
+function fallbackCopy(text, onCopied) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); onCopied(); } catch {}
+  document.body.removeChild(ta);
+}
+
+if ('ontouchstart' in window) {
+  let openPending = false;
+  let openTimer = null;
+  const openLink = document.getElementById('openInTiktok');
+  openLink.addEventListener('click', (e) => {
+    if (!openPending) {
+      e.preventDefault();
+      openPending = true;
+      openLink.textContent = 'Tap again to open ↗';
+      openTimer = setTimeout(() => {
+        openPending = false;
+        openLink.textContent = 'Open in TikTok ↗';
+      }, 2000);
+    } else {
+      clearTimeout(openTimer);
+      openPending = false;
+      openLink.textContent = 'Open in TikTok ↗';
+    }
+  });
+}
 document.getElementById('playModeGroup').addEventListener('click', (e) => {
   const btn = e.target.closest('.play-mode-btn');
   if (!btn) return;
