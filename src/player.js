@@ -2,21 +2,22 @@ import { shuffle, extractVideoId } from './parser.js';
 import { setScreen, showError } from './ui.js';
 
 const SESSION_KEY = 'tiktok_shuffle_session';
-const state = { deck: [], index: 0, total: 0 };
+const state = { deck: [], index: 0, total: 0, complete: false };
 
 function saveSession() {
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index })); } catch {}
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index, complete: state.complete })); } catch {}
 }
 
 export function restoreSession() {
   try {
     const saved = localStorage.getItem(SESSION_KEY);
     if (!saved) return false;
-    const { deck, index } = JSON.parse(saved);
+    const { deck, index, complete } = JSON.parse(saved);
     if (!Array.isArray(deck) || !deck.length) return false;
     state.deck = deck;
     state.total = deck.length;
     state.index = Math.min(index, deck.length - 1);
+    state.complete = complete || false;
     return true;
   } catch { return false; }
 }
@@ -26,13 +27,21 @@ export function resumeSession() {
   renderCard(state.index);
 }
 
+export function pauseVideo() {
+  const frame = document.getElementById('tiktok-frame');
+  frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'pause' }, 'https://www.tiktok.com');
+  isPlaying = false;
+}
+
 export function getSessionSummary() {
   if (!state.deck.length) return null;
-  const { total, unavailable } = getStats();
-  const current = state.index + 1;
-  const parts = [`Video ${current} of ${total}`];
+  const { total, seen, unavailable } = getStats();
+  const remaining = total - seen;
+  if (state.complete) return { text: `All ${total} videos watched`, complete: true };
+  const parts = [`Video ${seen} of ${total}`];
+  if (remaining > 0) parts.push(`${remaining} to go`);
   if (unavailable > 0) parts.push(`${unavailable} unavailable`);
-  return parts.join(' · ');
+  return { text: parts.join(' · '), complete: false };
 }
 
 function getStats() {
@@ -107,6 +116,7 @@ export function initPlayer(rawList) {
   state.deck = shuffle(valid);
   state.index = 0;
   state.total = state.deck.length;
+  state.complete = false;
 
   if (!state.total) {
     showError('No valid video URLs found in the bookmarks list.');
@@ -132,6 +142,8 @@ export function next() {
     document.getElementById('endTitle').textContent =
       `You've seen all ${state.total} video${state.total !== 1 ? 's' : ''}!`;
     renderStats('sessionStats');
+    state.complete = true;
+    saveSession();
     setScreen('end');
   } else {
     state.index = target;
@@ -151,6 +163,7 @@ export function previous() {
 export function reshuffle() {
   state.deck = shuffle(state.deck);
   state.index = 0;
+  state.complete = false;
   setScreen('player');
   renderCard(0);
 }
@@ -160,6 +173,7 @@ export function clearPlayer() {
   state.deck = [];
   state.index = 0;
   state.total = 0;
+  state.complete = false;
   localStorage.removeItem(SESSION_KEY);
 }
 
