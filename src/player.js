@@ -111,6 +111,7 @@ if (data.type === 'onPlayerReady') {
       const code = data.value?.errorCode;
       if (code === 1001 || !('ontouchstart' in window)) {
         state.deck[state.index].unavailable = true;
+        renderCounter();
         next();
       }
     }
@@ -200,6 +201,13 @@ export function clearPlayer() {
   localStorage.removeItem(SESSION_KEY);
 }
 
+function renderCounter() {
+  const { unavailable } = getStats();
+  const parts = [`${state.index + 1} / ${state.total}`];
+  if (unavailable > 0) parts.push(`${unavailable} unavailable`);
+  document.getElementById('counter').textContent = parts.join(' · ');
+}
+
 function renderCard(index) {
   const item = state.deck[index];
   const frame = document.getElementById('tiktok-frame');
@@ -207,7 +215,7 @@ function renderCard(index) {
   document.getElementById('videoProgressBar').style.transform = 'scaleX(0)';
   listenForReady(frame);
   frame.src = `https://www.tiktok.com/player/v1/${item.videoId}?autoplay=1&muted=0&loop=0&progress_bar=1&fullscreen_button=0&rel=0`;
-document.getElementById('counter').textContent = `${index + 1} / ${state.total}`;
+  renderCounter();
   const rawDate = item.Date || item.date || '';
   document.getElementById('videoDate').textContent = rawDate ? `Saved: ${rawDate}` : '';
   const openLink = document.getElementById('openInTiktok');
