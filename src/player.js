@@ -74,7 +74,7 @@ function renderStats(elId) {
 
 let messageHandler = null;
 let isPlaying = false;
-let playMode = 'off'; // 'off' | 'advance' | 'loop'
+let playMode = 'loop'; // 'off' | 'advance' | 'loop'
 
 export function setPlayMode(mode) { playMode = mode; }
 
