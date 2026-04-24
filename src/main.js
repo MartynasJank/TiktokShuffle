@@ -1,7 +1,7 @@
 import './style.css';
 import { parseBookmarks } from './parser.js';
 import { setScreen, showError, clearError } from './ui.js';
-import { initPlayer, next, previous, reshuffle, clearPlayer, togglePlayback, setPlayMode, restoreSession } from './player.js';
+import { initPlayer, next, previous, reshuffle, togglePlayback, setPlayMode, restoreSession, resumeSession, getSessionSummary } from './player.js';
 
 function readFile(file) {
   clearError();
@@ -41,10 +41,21 @@ async function loadDemo() {
   }
 }
 
-function resetToUpload() {
-  clearPlayer();
+function updateSessionBanner() {
+  const summary = getSessionSummary();
+  const banner = document.getElementById('sessionBanner');
+  if (summary) {
+    document.getElementById('sessionBannerStats').textContent = summary;
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
+function goToHome() {
   clearError();
   fileInput.value = '';
+  updateSessionBanner();
   setScreen('upload');
 }
 
@@ -132,10 +143,12 @@ document.getElementById('playModeGroup').addEventListener('click', (e) => {
   btn.classList.add('active');
   setPlayMode(btn.dataset.mode);
 });
-document.getElementById('btnLoadNew').addEventListener('click', resetToUpload);
-document.getElementById('btnLogo').addEventListener('click', resetToUpload);
+document.getElementById('btnResumeHome').addEventListener('click', resumeSession);
+document.getElementById('btnLogo').addEventListener('click', goToHome);
 document.getElementById('btnReshuffle').addEventListener('click', reshuffle);
-document.getElementById('btnLoadNew2').addEventListener('click', resetToUpload);
+document.getElementById('btnLoadNew2').addEventListener('click', goToHome);
+
+updateSessionBanner();
 
 document.addEventListener('keydown', (e) => {
   if (document.body.getAttribute('data-screen') !== 'player') return;

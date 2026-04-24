@@ -17,10 +17,22 @@ export function restoreSession() {
     state.deck = deck;
     state.total = deck.length;
     state.index = Math.min(index, deck.length - 1);
-    setScreen('player');
-    renderCard(state.index);
     return true;
   } catch { return false; }
+}
+
+export function resumeSession() {
+  setScreen('player');
+  renderCard(state.index);
+}
+
+export function getSessionSummary() {
+  if (!state.deck.length) return null;
+  const { total, unavailable } = getStats();
+  const current = state.index + 1;
+  const parts = [`Video ${current} of ${total}`];
+  if (unavailable > 0) parts.push(`${unavailable} unavailable`);
+  return parts.join(' · ');
 }
 
 function getStats() {
