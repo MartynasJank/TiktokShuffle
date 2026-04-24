@@ -61,6 +61,21 @@ body[data-screen="end"]    .screen-end    { display: flex; }
 }
 .session-banner.visible { display: flex; }
 
+.session-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.session-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
 .session-banner-stats {
   font-size: 0.9rem;
   color: var(--text-muted);

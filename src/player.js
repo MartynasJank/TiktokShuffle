@@ -37,11 +37,12 @@ export function getSessionSummary() {
   if (!state.deck.length) return null;
   const { total, seen, unavailable } = getStats();
   const remaining = total - seen;
-  if (state.complete) return { text: `All ${total} videos watched`, complete: true };
+  const percent = Math.round((seen / total) * 100);
+  if (state.complete) return { text: `All ${total} videos watched`, percent: 100, complete: true };
   const parts = [`Video ${seen} of ${total}`];
   if (remaining > 0) parts.push(`${remaining} to go`);
   if (unavailable > 0) parts.push(`${unavailable} unavailable`);
-  return { text: parts.join(' · '), complete: false };
+  return { text: parts.join(' · '), percent, complete: false };
 }
 
 function getStats() {
