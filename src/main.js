@@ -1,7 +1,7 @@
 import './style.css';
 import { parseBookmarks } from './parser.js';
 import { setScreen, showError, clearError } from './ui.js';
-import { initPlayer, next, previous, reshuffle, togglePlayback, setPlayMode, restoreSession, resumeSession, getSessionSummary } from './player.js';
+import { initPlayer, next, previous, reshuffle, togglePlayback, setPlayMode, restoreSession, resumeSession, pauseVideo, getSessionSummary } from './player.js';
 
 function readFile(file) {
   clearError();
@@ -45,7 +45,15 @@ function updateSessionBanner() {
   const summary = getSessionSummary();
   const banner = document.getElementById('sessionBanner');
   if (summary) {
-    document.getElementById('sessionBannerStats').textContent = summary;
+    document.getElementById('sessionBannerStats').textContent = summary.text;
+    const btn = document.getElementById('btnResumeHome');
+    if (summary.complete) {
+      btn.textContent = 'Reshuffle videos';
+      btn.onclick = () => reshuffle();
+    } else {
+      btn.textContent = 'Continue watching →';
+      btn.onclick = resumeSession;
+    }
     banner.classList.add('visible');
   } else {
     banner.classList.remove('visible');
@@ -53,6 +61,7 @@ function updateSessionBanner() {
 }
 
 function goToHome() {
+  pauseVideo();
   clearError();
   fileInput.value = '';
   updateSessionBanner();
@@ -143,7 +152,6 @@ document.getElementById('playModeGroup').addEventListener('click', (e) => {
   btn.classList.add('active');
   setPlayMode(btn.dataset.mode);
 });
-document.getElementById('btnResumeHome').addEventListener('click', resumeSession);
 document.getElementById('btnLogo').addEventListener('click', goToHome);
 document.getElementById('btnReshuffle').addEventListener('click', reshuffle);
 document.getElementById('btnLoadNew2').addEventListener('click', goToHome);
