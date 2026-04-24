@@ -12,6 +12,12 @@
   <div class="screen screen-upload">
     <div class="app-title"><span class="accent-tiktok">TikTok</span> <span class="accent-shuffle">Shuffle</span></div>
 
+    <div class="session-banner" id="sessionBanner">
+      <div class="session-banner-stats" id="sessionBannerStats"></div>
+      <button class="btn-primary" id="btnResumeHome">Continue watching →</button>
+      <div class="session-banner-divider">or start a new shuffle below</div>
+    </div>
+
     <div class="drop-zone" id="dropZone">
       <div class="drop-icon">📂</div>
       <div class="drop-label">Drop your TikTok data JSON here</div>
@@ -43,7 +49,6 @@
           <button class="play-mode-btn" data-mode="advance">Scroll</button>
           <button class="play-mode-btn" data-mode="loop">Loop</button>
         </div>
-        <button class="btn-ghost" id="btnLoadNew">Load new file</button>
       </div>
     </header>
 
