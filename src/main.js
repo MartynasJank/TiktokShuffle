@@ -165,7 +165,10 @@ updateSessionBanner();
 
 document.addEventListener('keydown', (e) => {
   if (document.body.getAttribute('data-screen') !== 'player') return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+  if (e.key === ' ') {
+    e.preventDefault();
+    togglePlayback();
+  } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
     e.preventDefault();
     next();
   } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
