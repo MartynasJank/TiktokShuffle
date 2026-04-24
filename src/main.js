@@ -184,6 +184,6 @@ const deltaY = touchStartY - e.changedTouches[0].clientY;
   }
 
   if (Math.abs(deltaY) < 10 && Math.abs(deltaX) < 10) {
-    togglePlayback();
+    if (!e.target.closest('button, a, select')) togglePlayback();
   }
 }, { passive: true });
