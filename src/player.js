@@ -53,7 +53,10 @@ if (data.type === 'onPlayerReady') {
     }
     if (data.type === 'onPlayerError') {
       const code = data.value?.errorCode;
-      if (code === 1001 || !('ontouchstart' in window)) next();
+      if (code === 1001 || !('ontouchstart' in window)) {
+        state.deck[state.index].unavailable = true;
+        next();
+      }
     }
   };
   window.addEventListener('message', messageHandler);
@@ -98,20 +101,25 @@ export function initPlayer(rawList) {
 }
 
 export function next() {
-  state.index++;
-  if (state.index >= state.total) {
+  let target = state.index + 1;
+  while (target < state.total && state.deck[target]?.unavailable) target++;
+  if (target >= state.total) {
     document.getElementById('endTitle').textContent =
       `You've seen all ${state.total} video${state.total !== 1 ? 's' : ''}!`;
     setScreen('end');
   } else {
+    state.index = target;
     renderCard(state.index);
   }
 }
 
 export function previous() {
-  if (state.index <= 0) return;
-  state.index--;
-  renderCard(state.index);
+  let target = state.index - 1;
+  while (target > 0 && state.deck[target]?.unavailable) target--;
+  if (target >= 0 && !state.deck[target]?.unavailable) {
+    state.index = target;
+    renderCard(state.index);
+  }
 }
 
 export function reshuffle() {
