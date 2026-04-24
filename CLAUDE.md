@@ -35,6 +35,6 @@ upload → (parse JSON, shuffle, validate IDs) → player → (all videos seen) 
 - In production (GitHub Pages), the base path is `/TiktokShuffle/` and the embed URLs resolve to TikTok directly.
 - Player state (play/pause, video-ended events) is received via `window.addEventListener('message', ...)` cross-origin postMessage from the TikTok embed.
 
-**Session persistence:** The shuffled video list is stored in `localStorage` under `tiktok_shuffle_list` so a page reload resumes where the user left off.
+**Session persistence:** The shuffled deck and current index are stored in `localStorage` under `tiktok_shuffle_session`. On load, `restoreSession()` silently restores state; if a session exists, a banner appears on the upload screen letting the user resume or start fresh. The session is only replaced when a new file is loaded — navigating home preserves it.
 
-**Deployment:** GitHub Pages via `.github/workflows/deploy.yml` — pushes to `master` trigger a Vite build and deploy. The Vite base path `/TiktokShuffle/` must stay in sync with the repo name.
+**Deployment:** GitHub Pages via `.github/workflows/deploy.yml` — pushes to `main` trigger a Vite build and deploy. The Vite base path `/TiktokShuffle/` must stay in sync with the repo name.

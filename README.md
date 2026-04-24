@@ -21,7 +21,8 @@ Videos are embedded via the official TikTok player. Your data never leaves your 
 - Tap to pause/play on mobile
 - **Open in TikTok** link to open the current video in the app
 - Unavailable or deleted videos are automatically skipped in both directions
-- Remembers your shuffle order and exact position across page refreshes
+- Remembers your shuffle order and exact position across page refreshes — return to the home screen and pick up exactly where you left off
+- Session stats on the end screen — videos seen and unavailable count
 - Works on desktop and mobile
 
 ## Getting started
@@ -51,8 +52,6 @@ The goal is to progressively improve the web app until it's good enough to wrap 
 - Swipe animation on mobile — video slides out in the direction of the swipe, next one slides in
 - Swipe left to open the current video in TikTok — more natural than tapping a small link
 - Visual progress bar showing how far through the deck you are
-- Session stats on the end screen — videos watched, skipped, and unavailable
-- "Done for today" button — save your position intentionally without having to reach the end screen
 - Remember last playback mode across sessions
 - PWA support — installable from the browser with its own icon, fullscreen, no browser chrome
 
