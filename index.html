@@ -38,11 +38,11 @@
     <header class="player-header">
       <div class="logo" id="btnLogo" role="button" tabindex="0"><span class="accent-tiktok">TikTok</span> <span class="accent-shuffle">Shuffle</span></div>
       <div class="header-actions">
-        <select id="playMode" class="select-mode">
-          <option value="off">Playback: Off</option>
-          <option value="advance">Auto-advance</option>
-          <option value="loop">Loop video</option>
-        </select>
+        <div class="play-mode-group" id="playModeGroup">
+          <button class="play-mode-btn active" data-mode="off">Off</button>
+          <button class="play-mode-btn" data-mode="advance">Scroll</button>
+          <button class="play-mode-btn" data-mode="loop">Loop</button>
+        </div>
         <button class="btn-ghost" id="btnLoadNew">Load new file</button>
       </div>
     </header>

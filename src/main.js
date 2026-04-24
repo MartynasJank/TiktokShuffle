@@ -77,8 +77,12 @@ dropZone.addEventListener('drop', (e) => {
 
 // ── Player / end events ───────────────────────────────────────────────────────
 document.getElementById('btnSkip').addEventListener('click', next);
-document.getElementById('playMode').addEventListener('change', (e) => {
-  setPlayMode(e.target.value);
+document.getElementById('playModeGroup').addEventListener('click', (e) => {
+  const btn = e.target.closest('.play-mode-btn');
+  if (!btn) return;
+  document.querySelectorAll('.play-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  setPlayMode(btn.dataset.mode);
 });
 document.getElementById('btnLoadNew').addEventListener('click', resetToUpload);
 document.getElementById('btnLogo').addEventListener('click', resetToUpload);
