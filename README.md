@@ -5,8 +5,8 @@ Shuffle and watch your TikTok saved videos in a clean, distraction-free player �
 ## How it works
 
 1. Request your TikTok data export at **Settings → Account → Download your data**
-2. Extract the ZIP and locate the `user_data.json` file
-3. Drop it into TikTok Shuffle
+2. Select **JSON** format, wait for the email, download and unzip
+3. Drop `user_data.json` into TikTok Shuffle
 4. Watch your saved videos in a random order
 
 Videos are embedded via the official TikTok player. Your data never leaves your browser.
@@ -15,11 +15,13 @@ Videos are embedded via the official TikTok player. Your data never leaves your 
 
 - Shuffles your entire saved video list
 - Skip forward/back through videos
-- Auto-advance or loop mode when a video ends
+- Playback modes: **Off**, **Scroll** (auto-advance when video ends), **Loop**
 - Keyboard navigation — `→` / `Space` to skip, `←` to go back
 - Scroll wheel and swipe navigation
 - Tap to pause/play on mobile
-- Remembers your session so you can pick up where you left off
+- **Open in TikTok** link to open the current video in the app
+- Unavailable or deleted videos are automatically skipped in both directions
+- Remembers your shuffle order and exact position across page refreshes
 - Works on desktop and mobile
 
 ## Getting started
@@ -38,6 +40,12 @@ npm run build
 ```
 
 Output goes to `dist/`.
+
+## Roadmap
+
+- Option to export and remove unavailable/deleted videos from bookmarks
+- Native iPhone app
+- Native Android app
 
 ## Tech stack
 
