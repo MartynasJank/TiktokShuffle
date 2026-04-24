@@ -1,4 +1,7 @@
-import './style.css';
+import './styles/base.css';
+import './styles/upload.css';
+import './styles/player.css';
+import './styles/end.css';
 import { parseBookmarks } from './parser.js';
 import { setScreen, showError, clearError } from './ui.js';
 import { initPlayer, next, previous, reshuffle, togglePlayback, setPlayMode, restoreSession, resumeSession, pauseVideo, getSessionSummary } from './player.js';
