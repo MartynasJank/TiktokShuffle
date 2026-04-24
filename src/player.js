@@ -146,6 +146,8 @@ function renderCard(index) {
 document.getElementById('counter').textContent = `${index + 1} / ${state.total}`;
   const rawDate = item.Date || item.date || '';
   document.getElementById('videoDate').textContent = rawDate ? `Saved: ${rawDate}` : '';
-  document.getElementById('openInTiktok').href = item.Link || item.link || '#';
+  const openLink = document.getElementById('openInTiktok');
+  openLink.href = item.Link || item.link || '#';
+  openLink.textContent = 'Open in TikTok ↗';
   saveSession();
 }
