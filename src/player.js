@@ -23,6 +23,19 @@ export function restoreSession() {
   } catch { return false; }
 }
 
+function getStats() {
+  const unavailable = state.deck.filter(v => v.unavailable).length;
+  return { total: state.total, seen: state.index + 1, unavailable };
+}
+
+function renderStats(elId) {
+  const { total, seen, unavailable } = getStats();
+  const el = document.getElementById(elId);
+  const parts = [`${seen} of ${total} videos seen`];
+  if (unavailable > 0) parts.push(`${unavailable} unavailable`);
+  el.textContent = parts.join(' · ');
+}
+
 let messageHandler = null;
 let isPlaying = false;
 let playMode = 'off'; // 'off' | 'advance' | 'loop'
@@ -106,6 +119,7 @@ export function next() {
   if (target >= state.total) {
     document.getElementById('endTitle').textContent =
       `You've seen all ${state.total} video${state.total !== 1 ? 's' : ''}!`;
+    renderStats('sessionStats');
     setScreen('end');
   } else {
     state.index = target;

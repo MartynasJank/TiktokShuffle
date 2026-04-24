@@ -302,6 +302,11 @@ body[data-screen="end"]    .screen-end    { display: flex; }
 
 .end-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
 
+.session-stats {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .btn-primary {
   width: 100%;
   background: var(--accent);
