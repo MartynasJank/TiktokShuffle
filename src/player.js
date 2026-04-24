@@ -2,24 +2,38 @@ import { shuffle, extractVideoId } from './parser.js';
 import { setScreen, showError } from './ui.js';
 
 const SESSION_KEY = 'tiktok_shuffle_session';
-const state = { deck: [], index: 0, total: 0, complete: false };
+const state = { deck: [], index: 0, total: 0, complete: false, demo: false };
 
 function saveSession() {
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index, complete: state.complete })); } catch {}
+  try {
+    if (state.demo) {
+      const existing = localStorage.getItem(SESSION_KEY);
+      if (existing) {
+        const parsed = JSON.parse(existing);
+        if (!parsed.demo) return;
+      }
+    }
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index, complete: state.complete, demo: state.demo }));
+  } catch {}
 }
 
 export function restoreSession() {
   try {
     const saved = localStorage.getItem(SESSION_KEY);
     if (!saved) return false;
-    const { deck, index, complete } = JSON.parse(saved);
+    const { deck, index, complete, demo } = JSON.parse(saved);
     if (!Array.isArray(deck) || !deck.length) return false;
     state.deck = deck;
     state.total = deck.length;
     state.index = Math.min(index, deck.length - 1);
     state.complete = complete || false;
+    state.demo = demo || false;
     return true;
   } catch { return false; }
+}
+
+export function isSessionDemo() {
+  return state.demo;
 }
 
 export function resumeSession() {
@@ -107,7 +121,7 @@ export function togglePlayback() {
   }
 }
 
-export function initPlayer(rawList) {
+export function initPlayer(rawList, { demo = false } = {}) {
   const valid = rawList
     .map(item => ({ ...item, videoId: extractVideoId(item.Link || item.link) }))
     .filter(item => item.videoId);
@@ -118,6 +132,7 @@ export function initPlayer(rawList) {
   state.index = 0;
   state.total = state.deck.length;
   state.complete = false;
+  state.demo = demo;
 
   if (!state.total) {
     showError('No valid video URLs found in the bookmarks list.');

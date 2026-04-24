@@ -35,7 +35,7 @@ async function loadDemo() {
     const parsed = await res.json();
     const raw = parseBookmarks(parsed);
     if (!raw.length) { showError('Demo file has no videos.'); return; }
-    initPlayer(raw);
+    initPlayer(raw, { demo: true });
   } catch {
     showError('Could not load the demo file.');
   }
@@ -63,6 +63,7 @@ function updateSessionBanner() {
 
 function goToHome() {
   pauseVideo();
+  restoreSession();
   clearError();
   fileInput.value = '';
   updateSessionBanner();
