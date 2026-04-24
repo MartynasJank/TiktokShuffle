@@ -237,6 +237,22 @@ body[data-screen="end"]    .screen-end    { display: flex; }
   z-index: 5;
 }
 
+.video-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.video-progress-bar.playing { opacity: 1; }
+
 @media (hover: hover) and (pointer: fine) {
   .swipe-zone {
     pointer-events: none;

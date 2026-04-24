@@ -89,6 +89,7 @@ if (data.type === 'onPlayerReady') {
     }
     if (data.type === 'onStateChange') {
       isPlaying = data.value === 1;
+      document.getElementById('videoProgressBar').classList.toggle('playing', isPlaying);
       if (isPlaying) {
         frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'unMute' }, 'https://www.tiktok.com');
       }
@@ -98,6 +99,12 @@ if (data.type === 'onPlayerReady') {
           frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'seekTo', value: 0 }, 'https://www.tiktok.com');
           frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'play' }, 'https://www.tiktok.com');
         }
+      }
+    }
+    if (data.type === 'onCurrentTime') {
+      const { currentTime, duration } = data.value || {};
+      if (duration > 0) {
+        document.getElementById('videoProgressBar').style.transform = `scaleX(${currentTime / duration})`;
       }
     }
     if (data.type === 'onPlayerError') {
@@ -197,6 +204,7 @@ function renderCard(index) {
   const item = state.deck[index];
   const frame = document.getElementById('tiktok-frame');
   isPlaying = false;
+  document.getElementById('videoProgressBar').style.transform = 'scaleX(0)';
   listenForReady(frame);
   frame.src = `https://www.tiktok.com/player/v1/${item.videoId}?autoplay=1&muted=0&loop=0&progress_bar=1&fullscreen_button=0&rel=0`;
 document.getElementById('counter').textContent = `${index + 1} / ${state.total}`;
