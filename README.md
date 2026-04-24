@@ -41,11 +41,28 @@ npm run build
 
 Output goes to `dist/`.
 
+
 ## Roadmap
 
-- Option to export and remove unavailable/deleted videos from bookmarks
-- Native iPhone app
-- Native Android app
+The goal is to progressively improve the web app until it's good enough to wrap as a native mobile app.
+
+**Feel**
+- Slide transition between videos on both mobile and desktop
+- Swipe animation on mobile — video slides out in the direction of the swipe, next one slides in
+- Swipe left to open the current video in TikTok — more natural than tapping a small link
+- Visual progress bar showing how far through the deck you are
+- Session stats on the end screen — videos watched, skipped, and unavailable
+- "Done for today" button — save your position intentionally without having to reach the end screen
+- Remember last playback mode across sessions
+- PWA support — installable from the browser with its own icon, fullscreen, no browser chrome
+
+**Video management**
+- Remember unavailable video IDs across sessions and devices — store confirmed broken/deleted video IDs server-side so they are skipped instantly on any device without waiting for a player error
+- Filter by date saved — watch only recently saved or a specific time range
+
+**Going native**
+- Package the PWA as a native app using Capacitor
+- Release on App Store (iOS) and Google Play (Android)
 
 ## Tech stack
 
