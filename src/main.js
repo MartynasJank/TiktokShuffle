@@ -1,17 +1,7 @@
 import './style.css';
 import { parseBookmarks } from './parser.js';
 import { setScreen, showError, clearError } from './ui.js';
-import { initPlayer, next, previous, reshuffle, clearPlayer, togglePlayback, setPlayMode } from './player.js';
-
-const STORAGE_KEY = 'tiktok_shuffle_list';
-
-function saveList(raw) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(raw)); } catch {}
-}
-
-function clearSavedList() {
-  localStorage.removeItem(STORAGE_KEY);
-}
+import { initPlayer, next, previous, reshuffle, clearPlayer, togglePlayback, setPlayMode, restoreSession } from './player.js';
 
 function readFile(file) {
   clearError();
@@ -32,7 +22,6 @@ function readFile(file) {
       return;
     }
 
-    saveList(raw);
     initPlayer(raw);
   };
   reader.readAsText(file);
@@ -46,7 +35,6 @@ async function loadDemo() {
     const parsed = await res.json();
     const raw = parseBookmarks(parsed);
     if (!raw.length) { showError('Demo file has no videos.'); return; }
-    saveList(raw);
     initPlayer(raw);
   } catch {
     showError('Could not load the demo file.');
@@ -54,7 +42,6 @@ async function loadDemo() {
 }
 
 function resetToUpload() {
-  clearSavedList();
   clearPlayer();
   clearError();
   fileInput.value = '';
@@ -62,13 +49,7 @@ function resetToUpload() {
 }
 
 // ── Restore from previous session ─────────────────────────────────────────────
-try {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    const raw = JSON.parse(saved);
-    if (Array.isArray(raw) && raw.length) initPlayer(raw);
-  }
-} catch {}
+restoreSession();
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const dropZone  = document.getElementById('dropZone');

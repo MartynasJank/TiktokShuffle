@@ -1,7 +1,27 @@
 import { shuffle, extractVideoId } from './parser.js';
 import { setScreen, showError } from './ui.js';
 
+const SESSION_KEY = 'tiktok_shuffle_session';
 const state = { deck: [], index: 0, total: 0 };
+
+function saveSession() {
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index })); } catch {}
+}
+
+export function restoreSession() {
+  try {
+    const saved = localStorage.getItem(SESSION_KEY);
+    if (!saved) return false;
+    const { deck, index } = JSON.parse(saved);
+    if (!Array.isArray(deck) || !deck.length) return false;
+    state.deck = deck;
+    state.total = deck.length;
+    state.index = Math.min(index, deck.length - 1);
+    setScreen('player');
+    renderCard(state.index);
+    return true;
+  } catch { return false; }
+}
 
 let messageHandler = null;
 let isPlaying = false;
@@ -106,6 +126,7 @@ export function clearPlayer() {
   state.deck = [];
   state.index = 0;
   state.total = 0;
+  localStorage.removeItem(SESSION_KEY);
 }
 
 function renderCard(index) {
@@ -117,4 +138,5 @@ function renderCard(index) {
 document.getElementById('counter').textContent = `${index + 1} / ${state.total}`;
   const rawDate = item.Date || item.date || '';
   document.getElementById('videoDate').textContent = rawDate ? `Saved: ${rawDate}` : '';
+  saveSession();
 }
