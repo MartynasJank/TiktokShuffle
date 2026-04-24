@@ -1,0 +1,127 @@
+.screen-upload {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 16px;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.accent-tiktok { color: #fff; }
+.accent-shuffle { color: var(--accent); }
+
+.session-banner {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.session-banner.visible { display: flex; }
+
+.session-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.session-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.session-banner-stats {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.session-banner-divider {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.session-banner .btn-primary {
+  width: 100%;
+}
+
+.drop-zone {
+  width: 100%;
+  max-width: 420px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--surface);
+  user-select: none;
+}
+.drop-zone:hover,
+.drop-zone.drag-active { border-color: var(--accent); background: #2a1218; }
+
+.drop-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.drop-label { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.drop-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+.demo-divider {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.btn-demo {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  padding: 10px 28px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-demo:hover { color: var(--accent); border-color: var(--accent); }
+
+.how-to {
+  max-width: 420px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: center;
+}
+.how-to strong { color: var(--text); }
+.how-to a { color: var(--accent); text-decoration: none; }
+.how-to a:hover { text-decoration: underline; }
+
+.error-msg {
+  max-width: 420px;
+  width: 100%;
+  background: #3a0d16;
+  border: 1px solid #7a1a2a;
+  color: #ff8096;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  display: none;
+}
+.error-msg.visible { display: block; }
+
+@media (max-width: 480px) {
+  .drop-zone { padding: 36px 20px; }
+  .drop-sub::before { content: 'Tap to browse'; }
+  .drop-sub { font-size: 0; }
+  .drop-sub::before { font-size: 0.8rem; color: var(--text-muted); }
+}
