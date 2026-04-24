@@ -46,6 +46,7 @@ function updateSessionBanner() {
   const banner = document.getElementById('sessionBanner');
   if (summary) {
     document.getElementById('sessionBannerStats').textContent = summary.text;
+    document.getElementById('sessionProgressFill').style.width = summary.percent + '%';
     const btn = document.getElementById('btnResumeHome');
     if (summary.complete) {
       btn.textContent = 'Reshuffle videos';
