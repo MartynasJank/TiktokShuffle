@@ -1,28 +1,34 @@
 # TikTok Shuffle
 
-Shuffle and watch your TikTok saved videos in a clean, distraction-free player — no algorithm, no feed, just your bookmarks in random order.
+Watch your saved TikTok videos in a different way. Shuffled, clean, and distraction-free. No algorithm and no endless feed. Just your bookmarks in random order.
 
 ## How it works
 
-1. Request your TikTok data export at **Settings → Account → Download your data**
-2. Select **JSON** format, wait for the email, download and unzip
-3. Drop `user_data.json` into TikTok Shuffle
-4. Watch your saved videos in a random order
+1. Go to **Settings → Account → Download your data** on TikTok
+2. Request your data in **JSON format**
+3. Wait for the email, download it, and unzip it
+4. Drop `user_data.json` into TikTok Shuffle
+5. Start watching your saved videos in a random order
 
-Videos are embedded via the official TikTok player. Your data never leaves your browser.
+Everything runs locally in your browser. Your data never leaves your device.
 
 ## Features
 
-- Shuffles your entire saved video list
-- Skip forward/back through videos
-- Playback modes: **Off**, **Scroll** (auto-advance when video ends), **Loop**
-- Keyboard navigation — `→` / `Space` to skip, `←` to go back
-- Scroll wheel and swipe navigation
-- Tap to pause/play on mobile
-- **Open in TikTok** link to open the current video in the app
-- Unavailable or deleted videos are automatically skipped in both directions
-- Remembers your shuffle order and exact position across page refreshes — return to the home screen and pick up exactly where you left off
-- Session stats on the end screen — videos seen and unavailable count
+- Shuffles your saved TikTok videos
+- Navigate forward and backward between videos
+- Playback modes:
+    - Off (manual control)
+    - Scroll (auto-advance when a video ends)
+    - Loop
+- Keyboard controls:
+    - `→` / `Space` to skip forward
+    - `←` to go back
+- Scroll wheel and swipe support on mobile
+- Tap to pause or play on mobile
+- Open in TikTok button for quick access in the app
+- Automatically skips deleted or unavailable videos
+- Saves shuffle order and position across refreshes so you can leave and come back where you left off
+- Simple session stats including videos watched, skipped, and unavailable
 - Works on desktop and mobile
 
 ## Getting started
@@ -32,7 +38,11 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Then open:
+
+```
+http://localhost:5173
+```
 
 ## Build
 
@@ -40,31 +50,35 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 npm run build
 ```
 
-Output goes to `dist/`.
-
+The output is generated in the `dist` folder.
 
 ## Roadmap
 
-The goal is to progressively improve the web app until it's good enough to wrap as a native mobile app.
+The goal is to gradually turn this into something that feels close to a native app.
 
-**Feel**
-- Slide transition between videos on both mobile and desktop
-- Swipe animation on mobile — video slides out in the direction of the swipe, next one slides in
-- Swipe left to open the current video in TikTok — more natural than tapping a small link
-- Visual progress bar showing how far through the deck you are
-- Remember last playback mode across sessions
-- PWA support — installable from the browser with its own icon, fullscreen, no browser chrome
+### Experience improvements
 
-**Video management**
-- Remember unavailable video IDs across sessions and devices — store confirmed broken/deleted video IDs server-side so they are skipped instantly on any device without waiting for a player error
-- Filter by date saved — watch only recently saved or a specific time range
+- Smoother swipe transitions between videos on mobile and desktop
+- Natural swipe animations where the current video slides out and the next slides in
+- Swipe left to open the current video in TikTok instead of using a button
+- Progress bar showing how far you are through your saved list
+- Persist playback mode between sessions
+- Add PWA support so it can be installed like an app
 
-**Going native**
-- Package the PWA as a native app using Capacitor
-- Release on App Store (iOS) and Google Play (Android)
+### Video management
+
+- Track unavailable or deleted videos across sessions
+- Server-side cache of broken video IDs so they are skipped immediately on any device
+- Filter videos by saved date such as recent or custom ranges
+
+### Going native
+
+- Wrap the PWA using Capacitor
+- Publish to App Store (iOS) and Google Play (Android)
 
 ## Tech stack
 
-- Vanilla JS (no framework)
-- [Vite](https://vitejs.dev/) for bundling
+- Vanilla JavaScript (no framework)
+- Vite for bundling
 - TikTok Embed Player API
+```
