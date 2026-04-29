@@ -89,6 +89,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .swipe-zone { pointer-events: none; }
+  .embed-wrap.controls-active .video-progress-bar { opacity: 0; }
 }
 
 #tiktok-frame {
