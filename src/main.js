@@ -82,6 +82,16 @@ const fileInput = document.getElementById('fileInput');
 
 if ('ontouchstart' in window) {
   document.getElementById('tiktok-frame').removeAttribute('allowfullscreen');
+} else {
+  const embedWrap = document.querySelector('.embed-wrap');
+  let controlsHideTimer = null;
+  embedWrap.addEventListener('mouseenter', () => {
+    clearTimeout(controlsHideTimer);
+    embedWrap.classList.add('controls-active');
+  });
+  embedWrap.addEventListener('mouseleave', () => {
+    controlsHideTimer = setTimeout(() => embedWrap.classList.remove('controls-active'), 2500);
+  });
 }
 
 // ── Upload events ─────────────────────────────────────────────────────────────

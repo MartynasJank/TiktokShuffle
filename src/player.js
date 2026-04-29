@@ -75,6 +75,7 @@ function renderStats(elId) {
 let messageHandler = null;
 let isPlaying = false;
 let playMode = 'loop'; // 'off' | 'advance' | 'loop'
+let progressBarTimeout = null;
 
 export function setPlayMode(mode) { playMode = mode; }
 
@@ -89,7 +90,13 @@ if (data.type === 'onPlayerReady') {
     }
     if (data.type === 'onStateChange') {
       isPlaying = data.value === 1;
-      document.getElementById('videoProgressBar').classList.toggle('playing', isPlaying);
+      const bar = document.getElementById('videoProgressBar');
+      clearTimeout(progressBarTimeout);
+      if (isPlaying) {
+        progressBarTimeout = setTimeout(() => bar.classList.add('playing'), 2500);
+      } else {
+        bar.classList.remove('playing');
+      }
       if (isPlaying) {
         frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'unMute' }, 'https://www.tiktok.com');
       }
@@ -212,7 +219,10 @@ function renderCard(index) {
   const item = state.deck[index];
   const frame = document.getElementById('tiktok-frame');
   isPlaying = false;
-  document.getElementById('videoProgressBar').style.transform = 'scaleX(0)';
+  clearTimeout(progressBarTimeout);
+  const bar = document.getElementById('videoProgressBar');
+  bar.classList.remove('playing');
+  bar.style.transform = 'scaleX(0)';
   listenForReady(frame);
   frame.src = `https://www.tiktok.com/player/v1/${item.videoId}?autoplay=1&muted=0&loop=0&progress_bar=1&fullscreen_button=0&rel=0`;
   renderCounter();
