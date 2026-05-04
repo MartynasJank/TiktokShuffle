@@ -1,0 +1,97 @@
+/* ── Auth button ── */
+.btn-auth {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.btn-auth:hover { color: var(--text); border-color: #555; }
+
+.auth-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ── Modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-backdrop.visible { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ── Sync indicator ── */
+.counter-sync-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.sync-indicator {
+  font-size: 0.7rem;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sync-indicator.syncing {
+  animation: sync-fade 1.8s ease-out forwards;
+}
+
+@keyframes sync-fade {
+  0%   { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+/* ── Upload screen needs relative positioning for .btn-auth ── */
+.screen-upload { position: relative; }

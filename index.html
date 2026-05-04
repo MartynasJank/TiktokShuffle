@@ -10,6 +10,7 @@
 
   <!-- ══ UPLOAD SCREEN ══ -->
   <div class="screen screen-upload">
+    <button class="btn-auth" id="btnAuth">Sign in with Google</button>
     <div class="app-title"><span class="accent-tiktok">TikTok</span> <span class="accent-shuffle">Shuffle</span></div>
 
     <div class="session-banner" id="sessionBanner">
@@ -69,7 +70,10 @@
           </div>
         </div>
         <button class="btn-skip" id="btnSkip">⏭&nbsp; Skip / Next</button>
-        <div class="counter" id="counter"></div>
+        <div class="counter-sync-row">
+          <div class="counter" id="counter"></div>
+          <span class="sync-indicator" id="syncIndicator" title="Synced to cloud">☁</span>
+        </div>
         <div class="skip-notice" id="skipNotice"></div>
       </div>
     </div>
@@ -84,6 +88,30 @@
     <div class="end-actions">
       <button class="btn-primary" id="btnReshuffle">Reshuffle and go again</button>
       <button class="btn-secondary" id="btnLoadNew2">Load a different file</button>
+    </div>
+  </div>
+
+  <!-- ══ CONFLICT DIALOG ══ -->
+  <div class="modal-backdrop" id="conflictModal">
+    <div class="modal">
+      <div class="modal-title">Cloud session found</div>
+      <div class="modal-body" id="conflictModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="btnUseCloud">Use cloud session</button>
+        <button class="btn-secondary" id="btnKeepLocal">Keep local session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SAME-FILE DIALOG ══ -->
+  <div class="modal-backdrop" id="sameFileModal">
+    <div class="modal">
+      <div class="modal-title">You've uploaded this file before</div>
+      <div class="modal-body" id="sameFileModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="btnContinueWatching">Continue watching</button>
+        <button class="btn-secondary" id="btnReshuffleNew">Reshuffle from scratch</button>
+      </div>
     </div>
   </div>
 
