@@ -3,3 +3,9 @@ dist/
 user_data_tiktok.json
 .idea/
 .claude/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+server/.env
