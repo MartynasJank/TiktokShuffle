@@ -9,45 +9,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install frontend dependencies
-        run: npm install
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Deploy dist/ to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "dist/*"
-          target: "/var/www/tiktokshuffle"
-          strip_components: 1
-
-      - name: Deploy server files
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "server/index.js,server/db.js,server/routes,server/package.json,server/package-lock.json,server/schema.sql"
-          target: "/var/www/tiktokshuffle"
-
-      - name: Install server dependencies and restart
+      - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /var/www/tiktokshuffle/server
+            cd /var/www/tiktokshuffle
+            git pull origin main
+            npm install
+            npm run build
+            cd server
             npm install --omit=dev
             pm2 restart tiktok-shuffle
