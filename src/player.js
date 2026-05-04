@@ -1,8 +1,9 @@
 import { shuffle, extractVideoId } from './parser.js';
 import { setScreen, showError } from './ui.js';
+import { uploadFullSession, syncProgress, clearCloudSession } from './sync.js';
 
 const SESSION_KEY = 'tiktok_shuffle_session';
-const state = { deck: [], index: 0, total: 0, complete: false, demo: false };
+const state = { deck: [], index: 0, total: 0, complete: false, demo: false, fingerprint: null };
 
 function saveSession() {
   try {
@@ -13,7 +14,15 @@ function saveSession() {
         if (!parsed.demo) return;
       }
     }
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ deck: state.deck, index: state.index, complete: state.complete, demo: state.demo }));
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      deck: state.deck,
+      index: state.index,
+      complete: state.complete,
+      demo: state.demo,
+      fingerprint: state.fingerprint,
+    }));
+    const unavailableIds = state.deck.filter(v => v.unavailable).map(v => v.videoId);
+    syncProgress(state.index, state.complete, unavailableIds);
   } catch {}
 }
 
@@ -21,20 +30,47 @@ export function restoreSession() {
   try {
     const saved = localStorage.getItem(SESSION_KEY);
     if (!saved) return false;
-    const { deck, index, complete, demo } = JSON.parse(saved);
+    const { deck, index, complete, demo, fingerprint } = JSON.parse(saved);
     if (!Array.isArray(deck) || !deck.length) return false;
     state.deck = deck;
     state.total = deck.length;
     state.index = Math.min(index, deck.length - 1);
     state.complete = complete || false;
     state.demo = demo || false;
+    state.fingerprint = fingerprint || null;
     return true;
   } catch { return false; }
 }
 
-export function isSessionDemo() {
-  return state.demo;
+export function setSessionFromCloud(cloudSession) {
+  const { deck, index, complete, demo, fingerprint, unavailableIds } = cloudSession;
+  if (!Array.isArray(deck) || !deck.length) return false;
+  const unavailableSet = new Set(unavailableIds || []);
+  state.deck = deck.map(item => ({
+    ...item,
+    unavailable: unavailableSet.has(item.videoId) ? true : item.unavailable,
+  }));
+  state.total = state.deck.length;
+  state.index = Math.min(index || 0, state.deck.length - 1);
+  state.complete = complete || false;
+  state.demo = demo || false;
+  state.fingerprint = fingerprint || null;
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      deck: state.deck,
+      index: state.index,
+      complete: state.complete,
+      demo: state.demo,
+      fingerprint: state.fingerprint,
+    }));
+  } catch {}
+  return true;
 }
+
+export function getSessionFingerprint() { return state.fingerprint; }
+export function getSessionIndex() { return state.index; }
+
+export function isSessionDemo() { return state.demo; }
 
 export function resumeSession() {
   setScreen('player');
@@ -85,7 +121,7 @@ function listenForReady(frame) {
     if (e.origin !== 'https://www.tiktok.com') return;
     const data = e.data;
     if (!data?.['x-tiktok-player']) return;
-if (data.type === 'onPlayerReady') {
+    if (data.type === 'onPlayerReady') {
       frame.contentWindow?.postMessage({ 'x-tiktok-player': true, type: 'play' }, 'https://www.tiktok.com');
     }
     if (data.type === 'onStateChange') {
@@ -136,7 +172,7 @@ export function togglePlayback() {
   }
 }
 
-export function initPlayer(rawList, { demo = false } = {}) {
+export function initPlayer(rawList, { demo = false, fingerprint = null } = {}) {
   const valid = rawList
     .map(item => ({ ...item, videoId: extractVideoId(item.Link || item.link) }))
     .filter(item => item.videoId);
@@ -148,6 +184,7 @@ export function initPlayer(rawList, { demo = false } = {}) {
   state.total = state.deck.length;
   state.complete = false;
   state.demo = demo;
+  state.fingerprint = fingerprint;
 
   if (!state.total) {
     showError('No valid video URLs found in the bookmarks list.');
@@ -164,6 +201,14 @@ export function initPlayer(rawList, { demo = false } = {}) {
 
   setScreen('player');
   renderCard(0);
+
+  uploadFullSession({
+    deck: state.deck,
+    index: 0,
+    complete: false,
+    demo,
+    fingerprint,
+  });
 }
 
 export function next() {
@@ -197,14 +242,23 @@ export function reshuffle() {
   state.complete = false;
   setScreen('player');
   renderCard(0);
+  uploadFullSession({
+    deck: state.deck,
+    index: 0,
+    complete: false,
+    demo: state.demo,
+    fingerprint: state.fingerprint,
+  });
 }
 
 export function clearPlayer() {
   document.getElementById('tiktok-frame').src = 'about:blank';
+  clearCloudSession();
   state.deck = [];
   state.index = 0;
   state.total = 0;
   state.complete = false;
+  state.fingerprint = null;
   localStorage.removeItem(SESSION_KEY);
 }
 
