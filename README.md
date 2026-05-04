@@ -10,7 +10,7 @@ Watch your saved TikTok videos in a different way. Shuffled, clean, and distract
 4. Drop `user_data.json` into TikTok Shuffle
 5. Start watching your saved videos in a random order
 
-Everything runs locally in your browser. Your data never leaves your device.
+Sign in with Google to sync your progress across devices. Your video list is stored on your own server — no third parties involved.
 
 ## Features
 
@@ -28,6 +28,8 @@ Everything runs locally in your browser. Your data never leaves your device.
 - Open in TikTok button for quick access in the app
 - Automatically skips deleted or unavailable videos
 - Saves shuffle order and position across refreshes so you can leave and come back where you left off
+- Optional Google sign-in to sync progress across devices
+- Detects if you upload the same file twice and offers to resume instead of resetting
 - Simple session stats including videos watched, skipped, and unavailable
 - Works on desktop and mobile
 
@@ -35,22 +37,33 @@ Everything runs locally in your browser. Your data never leaves your device.
 
 ```bash
 npm install
-npm run dev
+npm run dev        # frontend at http://localhost:5173
 ```
 
-Then open:
-
-```
-http://localhost:5173
-```
-
-## Build
+To also run the backend (required for Google sign-in):
 
 ```bash
-npm run build
+cp server/.env.example server/.env   # fill in credentials
+node server/index.js                 # API at http://localhost:3001
 ```
 
-The output is generated in the `dist` folder.
+## Build & deploy
+
+```bash
+npm run build          # builds frontend → dist/
+node server/index.js   # serves dist/ + API on PORT (default 3001)
+```
+
+Point nginx at port 3001 and the app is fully self-hosted.
+
+## Backend setup
+
+The backend requires:
+- Node.js
+- MySQL database — run `server/schema.sql` once to create the tables
+- A Google OAuth 2.0 Client ID ([Google Cloud Console](https://console.cloud.google.com)) with the callback URL `https://yourdomain.com/api/auth/google/callback`
+
+Copy `server/.env.example` to `server/.env` and fill in all values before starting.
 
 ## Roadmap
 
@@ -81,4 +94,6 @@ The goal is to gradually turn this into something that feels close to a native a
 - Vanilla JavaScript (no framework)
 - Vite for bundling
 - TikTok Embed Player API
-```
+- Express + Passport.js (backend)
+- MySQL (session storage)
+- Google OAuth 2.0
