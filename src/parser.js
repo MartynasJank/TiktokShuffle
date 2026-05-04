@@ -25,6 +25,16 @@ export function extractVideoId(link) {
   return match ? match[1] : null;
 }
 
+export async function fingerprintVideos(rawList) {
+  const ids = rawList
+    .map(item => extractVideoId(item.Link || item.link))
+    .filter(Boolean)
+    .sort()
+    .join(',');
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ids));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
