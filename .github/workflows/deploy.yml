@@ -16,13 +16,13 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm install
 
-      - name: Build
+      - name: Build frontend
         run: npm run build
 
-      - name: Deploy to server
+      - name: Deploy dist/ to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -31,3 +31,23 @@ jobs:
           source: "dist/*"
           target: "/var/www/tiktokshuffle"
           strip_components: 1
+
+      - name: Deploy server files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "server/index.js,server/db.js,server/routes,server/package.json,server/package-lock.json,server/schema.sql"
+          target: "/var/www/tiktokshuffle"
+
+      - name: Install server dependencies and restart
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /var/www/tiktokshuffle/server
+            npm install --omit=dev
+            pm2 restart tiktok-shuffle
